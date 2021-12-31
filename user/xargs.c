@@ -22,20 +22,22 @@ int main(int argc, char* argv[]){
 	//2.copy the output of previous command to the tail of x_args[]
 	char buf[512];
 	int i = 0;
-	int index = argc - 1;
+	int index = argc - 1;//index of x_args[]
 	int is_line_end = 0;
 	while(read(0,&buf[i],sizeof(char))){
 		if(buf[i]=='\n')	is_line_end = 1;
 		if(buf[i]==' '||buf[i]=='\n'){
-			buf[i] = 0;
-			x_args[index] = buf;
+			buf[i] = 0;//end
+			x_args[index] = buf;//add to the xargs[]
 			index++;
 			i = 0;
 		}
 		i++;
+		//3.exec the current line by children process
 		if(is_line_end){
 			is_line_end = 0;
-			index = argc - 1;
+			x_args[index] = 0;
+			index = argc - 1;//important! relocate the index  
 			int pid = fork();
 			if(pid < 0){
 				printf("fork error !\n");
